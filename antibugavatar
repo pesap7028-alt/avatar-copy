@@ -1,0 +1,92 @@
+-- [[ UNIVERSAL AVATAR CLONER R6/R15 ]] --
+-- Support: Delta, Fluxus, & Hydrogen
+
+local Players = game:GetService("Players")
+local lp = Players.LocalPlayer
+
+local function copyAvatar(targetName)
+    -- 1. Cari Player Target
+    local targetPlayer = nil
+    for _, v in pairs(Players:GetPlayers()) do
+        if v.Name:lower():sub(1, #targetName) == targetName:lower() or v.DisplayName:lower():sub(1, #targetName) == targetName:lower() then
+            targetPlayer = v
+            break
+        end
+    end
+
+    if not targetPlayer then
+        print("Player tidak ditemukan!")
+        return
+    end
+
+    -- 2. Ambil data outfit (HumanoidDescription)
+    local success, description = pcall(function()
+        return Players:GetHumanoidDescriptionFromUserId(targetPlayer.UserId)
+    end)
+
+    if success and description then
+        local char = lp.Character
+        if char and char:FindFirstChild("Humanoid") then
+            -- 3. Eksekusi Copy (Tanpa merusak script pergerakan)
+            task.spawn(function()
+                char.Humanoid:ApplyDescription(description)
+            end)
+            print("Berhasil Copy Avatar: " .. targetPlayer.Name)
+        end
+    else
+        warn("Gagal mengambil data outfit: " .. tostring(description))
+    end
+end
+
+-- [[ SEDERHANA UI UNTUK DELTA ]] --
+local ScreenGui = Instance.new("ScreenGui")
+local MainFrame = Instance.new("Frame")
+local Title = Instance.new("TextLabel")
+local Input = Instance.new("TextBox")
+local CopyBtn = Instance.new("TextButton")
+local UICorner = Instance.new("UICorner")
+
+ScreenGui.Name = "AvatarCloner"
+ScreenGui.Parent = game:CoreGui
+ScreenGui.ResetOnSpawn = false
+
+MainFrame.Name = "MainFrame"
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+MainFrame.Position = UDim2.new(0.5, -90, 0.4, 0)
+MainFrame.Size = UDim2.new(0, 180, 0, 130)
+MainFrame.Active = true
+MainFrame.Draggable = true -- Supaya bisa digeser di HP
+
+Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 10)
+
+Title.Parent = MainFrame
+Title.Size = UDim2.new(1, 0, 0, 30)
+Title.Text = "Avatar Cloner"
+Title.TextColor3 = Color3.new(1, 1, 1)
+Title.BackgroundTransparency = 1
+Title.Font = Enum.Font.GothamBold
+
+Input.Parent = MainFrame
+Input.PlaceholderText = "Username/Display..."
+Input.Size = UDim2.new(0, 150, 0, 30)
+Input.Position = UDim2.new(0, 15, 0, 40)
+Input.Text = ""
+Input.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+Input.TextColor3 = Color3.new(1, 1, 1)
+Instance.new("UICorner", Input)
+
+CopyBtn.Parent = MainFrame
+CopyBtn.Size = UDim2.new(0, 150, 0, 30)
+CopyBtn.Position = UDim2.new(0, 15, 0, 85)
+CopyBtn.Text = "COPY NOW"
+CopyBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+CopyBtn.TextColor3 = Color3.new(1, 1, 1)
+CopyBtn.Font = Enum.Font.GothamBold
+Instance.new("UICorner", CopyBtn)
+
+CopyBtn.MouseButton1Click:Connect(function()
+    if Input.Text ~= "" then
+        copyAvatar(Input.Text)
+    end
+end)
