@@ -1,0 +1,120 @@
+-- [[ ULTIMATE AVATAR CLONER V3 - FIX TEXTURE & FACE ]] --
+local player = game.Players.LocalPlayer
+local pgui = player:WaitForChild("PlayerGui")
+
+-- UI RE-SETUP
+if pgui:FindFirstChild("AvatarClonerV3") then pgui.AvatarClonerV3:Destroy() end
+local sg = Instance.new("ScreenGui", pgui)
+sg.Name = "AvatarClonerV3"
+sg.ResetOnSpawn = false
+
+local frame = Instance.new("Frame", sg)
+frame.Size = UDim2.new(0, 220, 0, 130)
+frame.Position = UDim2.new(0.5, -110, 0.4, 0)
+frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+frame.Active = true
+frame.Draggable = true
+Instance.new("UICorner", frame)
+
+local input = Instance.new("TextBox", frame)
+input.Size = UDim2.new(0, 200, 0, 35)
+input.Position = UDim2.new(0, 10, 0, 40)
+input.PlaceholderText = "Username Target..."
+input.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+input.TextColor3 = Color3.new(1, 1, 1)
+Instance.new("UICorner", input)
+
+local btn = Instance.new("TextButton", frame)
+btn.Size = UDim2.new(0, 200, 0, 35)
+btn.Position = UDim2.new(0, 10, 0, 85)
+btn.Text = "CLONE EVERYTHING"
+btn.BackgroundColor3 = Color3.fromRGB(0, 180, 100)
+btn.TextColor3 = Color3.new(1, 1, 1)
+btn.Font = Enum.Font.GothamBold
+Instance.new("UICorner", btn)
+
+local function clearOutfit(char)
+    for _, v in pairs(char:GetChildren()) do
+        if v:IsA("Accessory") or v:IsA("Shirt") or v:IsA("Pants") or v:IsA("BodyColors") or v:IsA("ShirtGraphic") or v:IsA("CharacterMesh") then
+            v:Destroy()
+        end
+    end
+    -- Bersihin muka lama
+    local head = char:FindFirstChild("Head")
+    if head then
+        for _, f in pairs(head:GetChildren()) do
+            if f:IsA("Decal") or f:IsA("Texture") then f:Destroy() end
+        end
+    end
+end
+
+local function copyFull(targetName)
+    local target = nil
+    for _, v in pairs(game.Players:GetPlayers()) do
+        if v.Name:lower():sub(1, #targetName) == targetName:lower() or v.DisplayName:lower():sub(1, #targetName) == targetName:lower() then
+            target = v
+            break
+        end
+    end
+
+    if target and target.Character then
+        local myChar = player.Character
+        if not myChar then return end
+        
+        clearOutfit(myChar)
+
+        -- 1. Copy Body Colors
+        local targetBC = target.Character:FindFirstChildOfClass("BodyColors")
+        if targetBC then targetBC:Clone().Parent = myChar end
+
+        -- 2. Copy Clothing (Shirt, Pants, T-Shirt)
+        for _, v in pairs(target.Character:GetChildren()) do
+            if v:IsA("Shirt") or v:IsA("Pants") or v:IsA("ShirtGraphic") or v:IsA("CharacterMesh") then
+                v:Clone().Parent = myChar
+            end
+        end
+
+        -- 3. Copy Accessories (Termasuk Baju 3D/Layered Clothing)
+        for _, v in pairs(target.Character:GetChildren()) do
+            if v:IsA("Accessory") then
+                local clone = v:Clone()
+                clone.Parent = myChar
+                if clone:FindFirstChild("Handle") then
+                    clone.Handle.CanCollide = false
+                end
+            end
+        end
+
+        -- 4. FIX HEAD & FACE (Solusi error SurfaceAppearance)
+        local targetHead = target.Character:FindFirstChild("Head")
+        local myHead = myChar:FindFirstChild("Head")
+        
+        if targetHead and myHead then
+            -- Copy Face Decal
+            for _, f in pairs(targetHead:GetChildren()) do
+                if f:IsA("Decal") then
+                    f:Clone().Parent = myHead
+                end
+            end
+            
+            -- Jika target pake SpecialMesh di kepala (kepala kotak/oval)
+            local targetMesh = targetHead:FindFirstChildOfClass("SpecialMesh")
+            if targetMesh then
+                if myHead:FindFirstChildOfClass("SpecialMesh") then
+                    myHead:FindFirstChildOfClass("SpecialMesh"):Destroy()
+                end
+                targetMesh:Clone().Parent = myHead
+            end
+        end
+        
+        print("Success! Avatar copied for: " .. target.Name)
+    else
+        print("Target not found!")
+    end
+end
+
+btn.MouseButton1Click:Connect(function()
+    if input.Text ~= "" then
+        copyFull(input.Text)
+    end
+end)
