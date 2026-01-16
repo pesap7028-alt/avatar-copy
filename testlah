@@ -1,0 +1,82 @@
+-- [[ AVATAR CLONER FIX FOR DELTA ]] --
+
+local player = game.Players.LocalPlayer
+local pgui = player:WaitForChild("PlayerGui")
+
+-- Hapus script lama kalau ada biar nggak tumpuk
+if pgui:FindFirstChild("AvatarClonerFix") then
+    pgui.AvatarClonerFix:Destroy()
+end
+
+-- Create UI
+local sg = Instance.new("ScreenGui")
+sg.Name = "AvatarClonerFix"
+sg.Parent = pgui
+sg.ResetOnSpawn = false -- Biar menu nggak ilang pas lo mati
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 200, 0, 120)
+frame.Position = UDim2.new(0.5, -100, 0.4, 0)
+frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+frame.Active = true
+frame.Draggable = true -- Biar bisa digeser-geser di HP
+frame.Parent = sg
+
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 8)
+corner.Parent = frame
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0, 30)
+title.Text = "Avatar Cloner (R6/R15)"
+title.TextColor3 = Color3.new(1, 1, 1)
+title.BackgroundTransparency = 1
+title.Parent = frame
+
+local input = Instance.new("TextBox")
+input.Size = UDim2.new(0, 180, 0, 30)
+input.Position = UDim2.new(0, 10, 0, 40)
+input.PlaceholderText = "Nama Player..."
+input.Text = ""
+input.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+input.TextColor3 = Color3.new(1, 1, 1)
+input.Parent = frame
+
+local btn = Instance.new("TextButton")
+btn.Size = UDim2.new(0, 180, 0, 30)
+btn.Position = UDim2.new(0, 10, 0, 80)
+btn.Text = "COPY AVATAR"
+btn.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+btn.TextColor3 = Color3.new(1, 1, 1)
+btn.Parent = frame
+Instance.new("UICorner", btn)
+
+-- Fungsi Copy Avatar (Work R6 & R15)
+local function copy(targetName)
+    local target = nil
+    for _, v in pairs(game.Players:GetPlayers()) do
+        if v.Name:lower():sub(1, #targetName) == targetName:lower() or v.DisplayName:lower():sub(1, #targetName) == targetName:lower() then
+            target = v
+            break
+        end
+    end
+
+    if target then
+        local hum = player.Character:FindFirstChildOfClass("Humanoid")
+        if hum then
+            local description = game.Players:GetHumanoidDescriptionFromUserId(target.UserId)
+            hum:ApplyDescription(description)
+            print("Berhasil copy: " .. target.Name)
+        end
+    else
+        print("Player gak ketemu!")
+    end
+end
+
+btn.MouseButton1Click:Connect(function()
+    if input.Text ~= "" then
+        copy(input.Text)
+    end
+end)
+
+print("Script Berhasil di Load!")
