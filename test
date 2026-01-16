@@ -1,0 +1,76 @@
+-- [[ STABLE AVATAR COPY - CLIENT SIDE ]] --
+-- Script by AI - Khusus buat Delta Executor
+
+local Players = game:GetService("Players")
+local lp = Players.LocalPlayer
+
+local function copyAvatar(targetUsername)
+    -- Cari player target
+    local targetPlayer = nil
+    for _, v in pairs(Players:GetPlayers()) do
+        if v.Name:lower():sub(1, #targetUsername) == targetUsername:lower() then
+            targetPlayer = v
+            break
+        end
+    end
+
+    if not targetPlayer then
+        print("Player tidak ditemukan!")
+        return
+    end
+
+    -- Ambil UserId target
+    local targetId = targetPlayer.UserId
+    
+    -- Proses penggantian outfit tanpa merusak pergerakan
+    task.spawn(function()
+        local char = lp.Character
+        if char and char:FindFirstChild("Humanoid") then
+            local hum = char.Humanoid
+            
+            -- Menggunakan HumanoidDescription (Paling Stabil & Anti Bug)
+            local success, description = pcall(function()
+                return Players:GetHumanoidDescriptionFromUserId(targetId)
+            end)
+
+            if success and description then
+                -- Apply outfit ke karakter kita
+                hum:ApplyDescription(description)
+                print("Berhasil copy avatar: " .. targetPlayer.Name)
+            else
+                warn("Gagal mengambil data outfit target.")
+            end
+        end
+    end)
+end
+
+-- [[ SIMPLE UI UNTUK DELTA ]] --
+local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local TextBox = Instance.new("TextBox")
+local CopyBtn = Instance.new("TextButton")
+
+ScreenGui.Parent = game:CoreGui
+Frame.Parent = ScreenGui
+Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Frame.Position = UDim2.new(0.5, -100, 0.4, 0)
+Frame.Size = UDim2.new(0, 200, 100)
+Frame.Active = true
+Frame.Draggable = true -- Biar bisa digeser di layar HP
+
+TextBox.Parent = Frame
+TextBox.Size = UDim2.new(0, 180, 0, 30)
+TextBox.Position = UDim2.new(0, 10, 0, 15)
+TextBox.PlaceholderText = "Nama Player..."
+TextBox.Text = ""
+
+CopyBtn.Parent = Frame
+CopyBtn.Size = UDim2.new(0, 180, 0, 30)
+CopyBtn.Position = UDim2.new(0, 10, 0, 55)
+CopyBtn.Text = "Copy Avatar"
+CopyBtn.BackgroundColor3 = Color3.fromRGB(0, 150, 0)
+CopyBtn.TextColor3 = Color3.new(1,1,1)
+
+CopyBtn.MouseButton1Click:Connect(function()
+    copyAvatar(TextBox.Text)
+end)
