@@ -1,0 +1,113 @@
+-- GUI COPY AVATAR BY AI
+local ScreenGui = Instance.new("ScreenGui")
+local MainFrame = Instance.new("Frame")
+local Title = Instance.new("TextLabel")
+local UsernameInput = Instance.new("TextBox")
+local CopyBtn = Instance.new("TextButton")
+local ResetBtn = Instance.new("TextButton")
+local UICorner = Instance.new("UICorner")
+
+-- Setup GUI ke CoreGui (biar ga ilang pas mati)
+ScreenGui.Name = "AvatarCopierGui"
+ScreenGui.Parent = game:GetService("CoreGui")
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+-- Frame Utama
+MainFrame.Name = "MainFrame"
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+MainFrame.Position = UDim2.new(0.3, 0, 0.3, 0)
+MainFrame.Size = UDim2.new(0, 220, 0, 180)
+MainFrame.Active = true
+MainFrame.Draggable = true -- Biar bisa digeser di layar HP
+
+local Corner = Instance.new("UICorner", MainFrame)
+
+-- Judul
+Title.Parent = MainFrame
+Title.Size = UDim2.new(1, 0, 0, 40)
+Title.Text = "Avatar Copier"
+Title.TextColor3 = Color3.new(1, 1, 1)
+Title.BackgroundTransparency = 1
+Title.TextSize = 18
+Title.Font = Enum.Font.SourceSansBold
+
+-- Kotak Input Nama
+UsernameInput.Parent = MainFrame
+UsernameInput.PlaceholderText = "Ketik Nama Player..."
+UsernameInput.Position = UDim2.new(0.1, 0, 0.3, 0)
+UsernameInput.Size = UDim2.new(0.8, 0, 0, 35)
+UsernameInput.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+UsernameInput.TextColor3 = Color3.new(1, 1, 1)
+UsernameInput.Text = ""
+Instance.new("UICorner", UsernameInput)
+
+-- Tombol Copy
+CopyBtn.Parent = MainFrame
+CopyBtn.Text = "COPY AVATAR"
+CopyBtn.Position = UDim2.new(0.1, 0, 0.55, 0)
+CopyBtn.Size = UDim2.new(0.8, 0, 0, 30)
+CopyBtn.BackgroundColor3 = Color3.fromRGB(0, 150, 0)
+CopyBtn.TextColor3 = Color3.new(1, 1, 1)
+Instance.new("UICorner", CopyBtn)
+
+-- Tombol Reset (Biar balik ke avatar asli)
+ResetBtn.Parent = MainFrame
+ResetBtn.Text = "RESET CHARACTER"
+ResetBtn.Position = UDim2.new(0.1, 0, 0.75, 0)
+ResetBtn.Size = UDim2.new(0.8, 0, 0, 30)
+ResetBtn.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
+ResetBtn.TextColor3 = Color3.new(1, 1, 1)
+Instance.new("UICorner", ResetBtn)
+
+-- FUNGSI COPY
+local function copyAvatar()
+    local targetName = UsernameInput.Text
+    local Players = game:GetService("Players")
+    local lp = Players.LocalPlayer
+    local targetPlayer = nil
+
+    -- Cari player (bisa pake nama pendek/display name)
+    for _, p in pairs(Players:GetPlayers()) do
+        if string.find(p.Name:lower(), targetName:lower()) or string.find(p.DisplayName:lower(), targetName:lower()) then
+            targetPlayer = p
+            break
+        end
+    end
+
+    if targetPlayer and targetPlayer.Character and lp.Character then
+        local char = lp.Character
+        local targetChar = targetPlayer.Character
+
+        -- Hapus item lama
+        for _, obj in pairs(char:GetChildren()) do
+            if obj:IsA("Accessory") or obj:IsA("Shirt") or obj:IsA("Pants") or obj:IsA("BodyColors") or obj:IsA("CharacterMesh") then
+                obj:Destroy()
+            end
+        end
+
+        -- Copy item baru
+        for _, obj in pairs(targetChar:GetChildren()) do
+            if obj:IsA("Accessory") or obj:IsA("Shirt") or obj:IsA("Pants") or obj:IsA("BodyColors") or obj:IsA("CharacterMesh") then
+                obj:Clone().Parent = char
+            end
+        end
+        
+        -- Copy Face
+        if targetChar:FindFirstChild("Head") and targetChar.Head:FindFirstChild("face") then
+            if char.Head:FindFirstChild("face") then
+                char.Head.face.Texture = targetChar.Head.face.Texture
+            end
+        end
+        print("Berhasil copy: " .. targetPlayer.Name)
+    else
+        print("Player ga ketemu!")
+    end
+end
+
+-- Event Klik
+CopyBtn.MouseButton1Click:Connect(copyAvatar)
+
+ResetBtn.MouseButton1Click:Connect(function()
+    game.Players.LocalPlayer.Character:BreakJoints() -- Cara paling gampang reset avatar
+end)
