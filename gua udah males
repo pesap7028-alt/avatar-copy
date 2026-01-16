@@ -1,0 +1,97 @@
+-- [[ MANUAL AVATAR CLONER - NO BACKEND ERROR ]] --
+local player = game.Players.LocalPlayer
+local pgui = player:WaitForChild("PlayerGui")
+
+-- UI Setup
+if pgui:FindFirstChild("AvatarClonerManual") then pgui.AvatarClonerManual:Destroy() end
+local sg = Instance.new("ScreenGui", pgui)
+sg.Name = "AvatarClonerManual"
+sg.ResetOnSpawn = false
+
+local frame = Instance.new("Frame", sg)
+frame.Size = UDim2.new(0, 200, 0, 120)
+frame.Position = UDim2.new(0.5, -100, 0.4, 0)
+frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+frame.Active = true
+frame.Draggable = true
+
+local input = Instance.new("TextBox", frame)
+input.Size = UDim2.new(0, 180, 0, 30)
+input.Position = UDim2.new(0, 10, 0, 40)
+input.PlaceholderText = "Username Target..."
+input.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+input.TextColor3 = Color3.new(1, 1, 1)
+
+local btn = Instance.new("TextButton", frame)
+btn.Size = UDim2.new(0, 180, 0, 30)
+btn.Position = UDim2.new(0, 10, 0, 80)
+btn.Text = "COPY AVATAR"
+btn.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
+btn.TextColor3 = Color3.new(1, 1, 1)
+
+-- Fungsi Bersihin Karakter Lo
+local function clearOutfit(char)
+    for _, v in pairs(char:GetChildren()) do
+        if v:IsA("Accessory") or v:IsA("Shirt") or v:IsA("Pants") or v:IsA("BodyColors") or v:IsA("ShirtGraphic") or v:IsA("CharacterMesh") then
+            v:Destroy()
+        end
+    end
+end
+
+-- Fungsi Copy Manual
+local function copyManual(targetName)
+    local target = nil
+    for _, v in pairs(game.Players:GetPlayers()) do
+        if v.Name:lower():sub(1, #targetName) == targetName:lower() or v.DisplayName:lower():sub(1, #targetName) == targetName:lower() then
+            target = v
+            break
+        end
+    end
+
+    if target and target.Character then
+        local myChar = player.Character
+        if not myChar then return end
+        
+        clearOutfit(myChar)
+
+        -- 1. Copy Body Colors (Warna Kulit)
+        local targetBC = target.Character:FindFirstChildOfClass("BodyColors")
+        if targetBC then
+            targetBC:Clone().Parent = myChar
+        end
+
+        -- 2. Copy Shirt & Pants (Baju & Celana)
+        local targetShirt = target.Character:FindFirstChildOfClass("Shirt")
+        if targetShirt then targetShirt:Clone().Parent = myChar end
+        
+        local targetPants = target.Character:FindFirstChildOfClass("Pants")
+        if targetPants then targetPants:Clone().Parent = myChar end
+
+        local targetTShirt = target.Character:FindFirstChildOfClass("ShirtGraphic")
+        if targetTShirt then targetTShirt:Clone().Parent = myChar end
+
+        -- 3. Copy Accessories (Rambut, Topi, Sayap, dll)
+        for _, v in pairs(target.Character:GetChildren()) do
+            if v:IsA("Accessory") then
+                local clone = v:Clone()
+                clone.Parent = myChar
+                
+                -- Fix posisi aksesoris buat Delta/Executor
+                local handle = clone:FindFirstChild("Handle")
+                if handle then
+                    handle.CanCollide = false
+                end
+            end
+        end
+        
+        print("Berhasil copy visual: " .. target.Name)
+    else
+        print("Player gak ketemu atau karakternya belum load!")
+    end
+end
+
+btn.MouseButton1Click:Connect(function()
+    if input.Text ~= "" then
+        copyManual(input.Text)
+    end
+end)
