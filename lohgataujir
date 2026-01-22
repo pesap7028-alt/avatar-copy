@@ -35,17 +35,30 @@ local Masker_MeshID = "13120460725"
 local Masker_TextureID = "13120460788" 
 local Masker_Ukuran = 1.0 
 
--- POSISI MASKER (GUE UPDATE DI SINI)
--- Semakin minus (-) semakin ke bawah
--- Semakin mendekati 0 semakin mundur (nempel muka)
-local Masker_Atas_Bawah = -0.7    -- <== Sudah diturunin lagi
-local Masker_Depan_Belakang = -0.1 -- <== Sudah dimundurin (biar nempel)
+local Masker_Atas_Bawah = -0.7    
+local Masker_Depan_Belakang = -0.1 
 local Masker_Kanan_Kiri = 0
 
--- ROTASI MASKER
 local Masker_Putar_X = 0
 local Masker_Putar_Y = 0
 local Masker_Putar_Z = 0
+
+-- =========================================================
+--  4. PENGATURAN TANDUK (NEW ITEM)
+-- =========================================================
+local Tanduk_MeshID = "16187396723" -- ID Mesh Tanduk
+local Tanduk_TextureID = "16187396770" -- ID Texture Tanduk
+local Tanduk_Ukuran = 1.0 
+
+-- POSISI TANDUK
+local Tanduk_Atas_Bawah = 0.6      -- Atur tinggi tanduk di sini
+local Tanduk_Depan_Belakang = 0.1  -- Maju mundurin tanduk
+local Tanduk_Kanan_Kiri = 0
+
+-- ROTASI TANDUK
+local Tanduk_Putar_X = 0
+local Tanduk_Putar_Y = 0
+local Tanduk_Putar_Z = 0
 
 -- =========================================================
 --  CORE SCRIPT (JANGAN DIUBAH)
@@ -62,9 +75,9 @@ local function pasangAksesoris()
     
     if not head then return end
 
-    -- Bersihin Item Lama
+    -- Bersihin Item Lama (Termasuk Tanduk)
     for _, v in pairs(char:GetChildren()) do
-        if v.Name == "MyCustomHair" or v.Name == "MyHandItem" or v.Name == "MyMaskItem" then 
+        if v.Name == "MyCustomHair" or v.Name == "MyHandItem" or v.Name == "MyMaskItem" or v.Name == "MyTanduk" then 
             v:Destroy() 
         end
     end
@@ -89,7 +102,7 @@ local function pasangAksesoris()
     hairWeld.C0 = CFrame.new(Rambut_Kanan_Kiri, Rambut_Atas_Bawah, Rambut_Depan_Belakang) * 
                   CFrame.Angles(math.rad(Rambut_Putar_X), math.rad(Rambut_Putar_Y), math.rad(Rambut_Putar_Z))
 
-    -- === PASANG PEDANG ===
+    -- === PASANG SENJATA ===
     if hand then 
         local handPart = Instance.new("Part")
         handPart.Name = "MyHandItem"
@@ -128,9 +141,28 @@ local function pasangAksesoris()
     local maskWeld = Instance.new("Weld", maskPart)
     maskWeld.Part0 = head
     maskWeld.Part1 = maskPart
-    
     maskWeld.C0 = CFrame.new(Masker_Kanan_Kiri, Masker_Atas_Bawah, Masker_Depan_Belakang) * 
                   CFrame.Angles(math.rad(Masker_Putar_X), math.rad(Masker_Putar_Y), math.rad(Masker_Putar_Z))
+
+    -- === PASANG TANDUK ===
+    local tandukPart = Instance.new("Part")
+    tandukPart.Name = "MyTanduk"
+    tandukPart.Size = Vector3.new(0.1, 0.1, 0.1)
+    tandukPart.CanCollide = false
+    tandukPart.Massless = true
+    tandukPart.Parent = char
+
+    local tandukMesh = Instance.new("SpecialMesh", tandukPart)
+    tandukMesh.MeshType = Enum.MeshType.FileMesh
+    tandukMesh.MeshId = "rbxassetid://" .. Tanduk_MeshID
+    tandukMesh.TextureId = "rbxassetid://" .. Tanduk_TextureID
+    tandukMesh.Scale = Vector3.new(Tanduk_Ukuran, Tanduk_Ukuran, Tanduk_Ukuran)
+
+    local tandukWeld = Instance.new("Weld", tandukPart)
+    tandukWeld.Part0 = head
+    tandukWeld.Part1 = tandukPart
+    tandukWeld.C0 = CFrame.new(Tanduk_Kanan_Kiri, Tanduk_Atas_Bawah, Tanduk_Depan_Belakang) * 
+                     CFrame.Angles(math.rad(Tanduk_Putar_X), math.rad(Tanduk_Putar_Y), math.rad(Tanduk_Putar_Z))
 end
 
 pasangAksesoris()
