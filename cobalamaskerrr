@@ -38,8 +38,8 @@ local Masker_Ukuran = 1.0
 -- POSISI MASKER (GUE UPDATE DI SINI)
 -- Semakin minus (-) semakin ke bawah
 -- Semakin mendekati 0 semakin mundur (nempel muka)
-local Masker_Atas_Bawah = -0.6    -- <== Sudah diturunin lagi
-local Masker_Depan_Belakang = -0.3 -- <== Sudah dimundurin (biar nempel)
+local Masker_Atas_Bawah = -0.7    -- <== Sudah diturunin lagi
+local Masker_Depan_Belakang = -0.4 -- <== Sudah dimundurin (biar nempel)
 local Masker_Kanan_Kiri = 0
 
 -- ROTASI MASKER
