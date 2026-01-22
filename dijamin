@@ -63,7 +63,7 @@ local Tanduk_Putar_Z = 0
 -- =========================================================
 local Punggung_MeshID = "15557143001" -- Pake ID yang sama biar matching
 local Punggung_TextureID = "15557143066"
-local Punggung_Ukuran = 0.4 
+local Punggung_Ukuran = 0.1 
 
 -- POSISI PUNGGUNG
 local Punggung_Atas_Bawah = 0.5    -- Naik turun di punggung
@@ -73,7 +73,7 @@ local Punggung_Kanan_Kiri = 0
 -- ROTASI PUNGGUNG (Biar miring ala samurai)
 local Punggung_Putar_X = 0
 local Punggung_Putar_Y = 0
-local Punggung_Putar_Z = 45 -- Miringin pedangnya
+local Punggung_Putar_Z = 60 -- Miringin pedangnya
 
 -- =========================================================
 --  CORE SCRIPT (JANGAN DIUBAH)
