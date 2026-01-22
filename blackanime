@@ -1,8 +1,8 @@
 -- =========================================================
 --  1. PENGATURAN RAMBUT (HEAD)
 -- =========================================================
-local Rambut_MeshID = "10697347996"
-local Rambut_TextureID = "" 
+local Rambut_MeshID = "130298636566249"
+local Rambut_TextureID = "123401174714687" 
 local Rambut_Ukuran = 1.0 
 
 local Rambut_Atas_Bawah = 0     
@@ -16,9 +16,9 @@ local Rambut_Putar_Z = 0
 -- =========================================================
 --  2. PENGATURAN TANGAN (HAND ITEM)
 -- =========================================================
-local Tangan_MeshID = "17288777563" 
-local Tangan_TextureID = "17288777518"
-local Tangan_Ukuran = 0.3 
+local Tangan_MeshID = "1215795701" 
+local Tangan_TextureID = "1215795713"
+local Tangan_Ukuran = 0.2 
 
 local Tangan_Atas_Bawah = -1.0
 local Tangan_Depan_Belakang = -2 
@@ -46,8 +46,8 @@ local Masker_Putar_Z = 0
 -- =========================================================
 --  4. PENGATURAN TANDUK (NEW ITEM)
 -- =========================================================
-local Tanduk_MeshID = "9690447803" 
-local Tanduk_TextureID = "" 
+local Tanduk_MeshID = "16187396723" 
+local Tanduk_TextureID = "16187396770" 
 local Tanduk_Ukuran = 1.0 
 
 local Tanduk_Atas_Bawah = 0.6      
@@ -61,8 +61,8 @@ local Tanduk_Putar_Z = 0
 -- =========================================================
 --  5. PENGATURAN PEDANG PUNGGUNG (BACK ITEM)
 -- =========================================================
-local Punggung_MeshID = "15557143001" -- Pake ID yang sama biar matching
-local Punggung_TextureID = "15557143066"
+local Punggung_MeshID = "11480102224" -- Pake ID yang sama biar matching
+local Punggung_TextureID = "11480102304"
 local Punggung_Ukuran = 0.08 
 
 -- POSISI PUNGGUNG
