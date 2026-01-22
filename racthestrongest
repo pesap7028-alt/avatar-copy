@@ -1,0 +1,207 @@
+-- =========================================================
+--  1. PENGATURAN RAMBUT (HEAD)
+-- =========================================================
+local Rambut_MeshID = "10697347996"
+local Rambut_TextureID = "" 
+local Rambut_Ukuran = 1.0 
+
+local Rambut_Atas_Bawah = 0     
+local Rambut_Depan_Belakang = 0
+local Rambut_Kanan_Kiri = 0
+
+local Rambut_Putar_X = 0
+local Rambut_Putar_Y = 0
+local Rambut_Putar_Z = 0
+
+-- =========================================================
+--  2. PENGATURAN TANGAN (HAND ITEM)
+-- =========================================================
+local Tangan_MeshID = "17288777563" 
+local Tangan_TextureID = "17288777518"
+local Tangan_Ukuran = 0.2 
+
+local Tangan_Atas_Bawah = -1.0
+local Tangan_Depan_Belakang = -2 
+local Tangan_Kanan_Kiri = 0
+
+local Tangan_Putar_X = 0
+local Tangan_Putar_Y = 90 
+local Tangan_Putar_Z = -90 
+
+-- =========================================================
+--  3. PENGATURAN MASKER (FACE ITEM)
+-- =========================================================
+local Masker_MeshID = "13120460725" 
+local Masker_TextureID = "13120460788" 
+local Masker_Ukuran = 1.0 
+
+local Masker_Atas_Bawah = -0.7    
+local Masker_Depan_Belakang = -0.1 
+local Masker_Kanan_Kiri = 0
+
+local Masker_Putar_X = 0
+local Masker_Putar_Y = 0
+local Masker_Putar_Z = 0
+
+-- =========================================================
+--  4. PENGATURAN TANDUK (NEW ITEM)
+-- =========================================================
+local Tanduk_MeshID = "9690447803" 
+local Tanduk_TextureID = "" 
+local Tanduk_Ukuran = 1.0 
+
+local Tanduk_Atas_Bawah = 0.6      
+local Tanduk_Depan_Belakang = 0.1  
+local Tanduk_Kanan_Kiri = 0
+
+local Tanduk_Putar_X = 0
+local Tanduk_Putar_Y = 0
+local Tanduk_Putar_Z = 0
+
+-- =========================================================
+--  5. PENGATURAN PEDANG PUNGGUNG (BACK ITEM)
+-- =========================================================
+local Punggung_MeshID = "15557143001" -- Pake ID yang sama biar matching
+local Punggung_TextureID = "15557143066"
+local Punggung_Ukuran = 0.08 
+
+-- POSISI PUNGGUNG
+local Punggung_Atas_Bawah = 0.5    -- Naik turun di punggung
+local Punggung_Depan_Belakang = 0.6 -- Mundurin biar nempel di punggung (semakin besar semakin mundur)
+local Punggung_Kanan_Kiri = 0
+
+-- ROTASI PUNGGUNG (Biar miring ala samurai)
+local Punggung_Putar_X = 0
+local Punggung_Putar_Y = 0
+local Punggung_Putar_Z = 85 -- Miringin pedangnya
+
+-- =========================================================
+--  CORE SCRIPT (JANGAN DIUBAH)
+-- =========================================================
+
+local player = game.Players.LocalPlayer
+
+local function pasangAksesoris()
+    local char = player.Character
+    if not char then return end
+    
+    local head = char:WaitForChild("Head", 10)
+    local hand = char:FindFirstChild("RightHand") or char:FindFirstChild("Right Arm")
+    local torso = char:FindFirstChild("UpperTorso") or char:FindFirstChild("Torso") -- Cek R15 atau R6
+    
+    if not head then return end
+
+    -- Bersihin Item Lama
+    for _, v in pairs(char:GetChildren()) do
+        if v.Name == "MyCustomHair" or v.Name == "MyHandItem" or v.Name == "MyMaskItem" or v.Name == "MyTanduk" or v.Name == "MyBackItem" then 
+            v:Destroy() 
+        end
+    end
+
+    -- === PASANG RAMBUT ===
+    local hairPart = Instance.new("Part")
+    hairPart.Name = "MyCustomHair"
+    hairPart.Size = Vector3.new(0.1, 0.1, 0.1)
+    hairPart.CanCollide = false
+    hairPart.Massless = true
+    hairPart.Parent = char
+
+    local hairMesh = Instance.new("SpecialMesh", hairPart)
+    hairMesh.MeshType = Enum.MeshType.FileMesh
+    hairMesh.MeshId = "rbxassetid://" .. Rambut_MeshID
+    hairMesh.TextureId = "rbxassetid://" .. Rambut_TextureID
+    hairMesh.Scale = Vector3.new(Rambut_Ukuran, Rambut_Ukuran, Rambut_Ukuran)
+
+    local hairWeld = Instance.new("Weld", hairPart)
+    hairWeld.Part0 = head
+    hairWeld.Part1 = hairPart
+    hairWeld.C0 = CFrame.new(Rambut_Kanan_Kiri, Rambut_Atas_Bawah, Rambut_Depan_Belakang) * 
+                  CFrame.Angles(math.rad(Rambut_Putar_X), math.rad(Rambut_Putar_Y), math.rad(Rambut_Putar_Z))
+
+    -- === PASANG SENJATA TANGAN ===
+    if hand then 
+        local handPart = Instance.new("Part")
+        handPart.Name = "MyHandItem"
+        handPart.Size = Vector3.new(0.1, 0.1, 0.1)
+        handPart.CanCollide = false
+        handPart.Massless = true
+        handPart.Parent = char
+
+        local handMesh = Instance.new("SpecialMesh", handPart)
+        handMesh.MeshType = Enum.MeshType.FileMesh
+        handMesh.MeshId = "rbxassetid://" .. Tangan_MeshID
+        handMesh.TextureId = "rbxassetid://" .. Tangan_TextureID
+        handMesh.Scale = Vector3.new(Tangan_Ukuran, Tangan_Ukuran, Tangan_Ukuran)
+
+        local handWeld = Instance.new("Weld", handPart)
+        handWeld.Part0 = hand
+        handWeld.Part1 = handPart
+        handWeld.C0 = CFrame.new(Tangan_Kanan_Kiri, Tangan_Atas_Bawah, Tangan_Depan_Belakang) * 
+                      CFrame.Angles(math.rad(Tangan_Putar_X), math.rad(Tangan_Putar_Y), math.rad(Tangan_Putar_Z))
+    end
+
+    -- === PASANG MASKER ===
+    local maskPart = Instance.new("Part")
+    maskPart.Name = "MyMaskItem"
+    maskPart.Size = Vector3.new(0.1, 0.1, 0.1)
+    maskPart.CanCollide = false
+    maskPart.Massless = true
+    maskPart.Parent = char
+
+    local maskMesh = Instance.new("SpecialMesh", maskPart)
+    maskMesh.MeshType = Enum.MeshType.FileMesh
+    maskMesh.MeshId = "rbxassetid://" .. Masker_MeshID
+    maskMesh.TextureId = "rbxassetid://" .. Masker_TextureID
+    maskMesh.Scale = Vector3.new(Masker_Ukuran, Masker_Ukuran, Masker_Ukuran)
+
+    local maskWeld = Instance.new("Weld", maskPart)
+    maskWeld.Part0 = head
+    maskWeld.Part1 = maskPart
+    maskWeld.C0 = CFrame.new(Masker_Kanan_Kiri, Masker_Atas_Bawah, Masker_Depan_Belakang) * 
+                  CFrame.Angles(math.rad(Masker_Putar_X), math.rad(Masker_Putar_Y), math.rad(Masker_Putar_Z))
+
+    -- === PASANG TANDUK ===
+    local tandukPart = Instance.new("Part")
+    tandukPart.Name = "MyTanduk"
+    tandukPart.Size = Vector3.new(0.1, 0.1, 0.1)
+    tandukPart.CanCollide = false
+    tandukPart.Massless = true
+    tandukPart.Parent = char
+
+    local tandukMesh = Instance.new("SpecialMesh", tandukPart)
+    tandukMesh.MeshType = Enum.MeshType.FileMesh
+    tandukMesh.MeshId = "rbxassetid://" .. Tanduk_MeshID
+    tandukMesh.TextureId = "rbxassetid://" .. Tanduk_TextureID
+    tandukMesh.Scale = Vector3.new(Tanduk_Ukuran, Tanduk_Ukuran, Tanduk_Ukuran)
+
+    local tandukWeld = Instance.new("Weld", tandukPart)
+    tandukWeld.Part0 = head
+    tandukWeld.Part1 = tandukPart
+    tandukWeld.C0 = CFrame.new(Tanduk_Kanan_Kiri, Tanduk_Atas_Bawah, Tanduk_Depan_Belakang) * 
+                     CFrame.Angles(math.rad(Tanduk_Putar_X), math.rad(Tanduk_Putar_Y), math.rad(Tanduk_Putar_Z))
+
+    -- === PASANG PEDANG PUNGGUNG ===
+    if torso then
+        local backPart = Instance.new("Part")
+        backPart.Name = "MyBackItem"
+        backPart.Size = Vector3.new(0.1, 0.1, 0.1)
+        backPart.CanCollide = false
+        backPart.Massless = true
+        backPart.Parent = char
+
+        local backMesh = Instance.new("SpecialMesh", backPart)
+        backMesh.MeshType = Enum.MeshType.FileMesh
+        backMesh.MeshId = "rbxassetid://" .. Punggung_MeshID
+        backMesh.TextureId = "rbxassetid://" .. Punggung_TextureID
+        backMesh.Scale = Vector3.new(Punggung_Ukuran, Punggung_Ukuran, Punggung_Ukuran)
+
+        local backWeld = Instance.new("Weld", backPart)
+        backWeld.Part0 = torso
+        backWeld.Part1 = backPart
+        backWeld.C0 = CFrame.new(Punggung_Kanan_Kiri, Punggung_Atas_Bawah, Punggung_Depan_Belakang) * 
+                      CFrame.Angles(math.rad(Punggung_Putar_X), math.rad(Punggung_Putar_Y), math.rad(Punggung_Putar_Z))
+    end
+end
+
+pasangAksesoris()
+player.CharacterAdded:Connect(pasangAksesoris)
