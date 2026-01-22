@@ -18,7 +18,7 @@ local Rambut_Putar_Z = 0
 -- =========================================================
 local Tangan_MeshID = "17288777563" 
 local Tangan_TextureID = "17288777518"
-local Tangan_Ukuran = 0.2 
+local Tangan_Ukuran = 0.4 
 
 local Tangan_Atas_Bawah = -1.0
 local Tangan_Depan_Belakang = -2 
@@ -46,19 +46,34 @@ local Masker_Putar_Z = 0
 -- =========================================================
 --  4. PENGATURAN TANDUK (NEW ITEM)
 -- =========================================================
-local Tanduk_MeshID = "18370010161" -- ID Mesh Tanduk
-local Tanduk_TextureID = "" -- ID Texture Tanduk
+local Tanduk_MeshID = "16187396723" 
+local Tanduk_TextureID = "16187396770" 
 local Tanduk_Ukuran = 1.0 
 
--- POSISI TANDUK
-local Tanduk_Atas_Bawah = 0.6      -- Atur tinggi tanduk di sini
-local Tanduk_Depan_Belakang = 0.1  -- Maju mundurin tanduk
+local Tanduk_Atas_Bawah = 0.6      
+local Tanduk_Depan_Belakang = 0.1  
 local Tanduk_Kanan_Kiri = 0
 
--- ROTASI TANDUK
 local Tanduk_Putar_X = 0
 local Tanduk_Putar_Y = 0
 local Tanduk_Putar_Z = 0
+
+-- =========================================================
+--  5. PENGATURAN PEDANG PUNGGUNG (BACK ITEM)
+-- =========================================================
+local Punggung_MeshID = "15557143001" -- Pake ID yang sama biar matching
+local Punggung_TextureID = "15557143066"
+local Punggung_Ukuran = 0.4 
+
+-- POSISI PUNGGUNG
+local Punggung_Atas_Bawah = 0.5    -- Naik turun di punggung
+local Punggung_Depan_Belakang = 0.6 -- Mundurin biar nempel di punggung (semakin besar semakin mundur)
+local Punggung_Kanan_Kiri = 0
+
+-- ROTASI PUNGGUNG (Biar miring ala samurai)
+local Punggung_Putar_X = 0
+local Punggung_Putar_Y = 0
+local Punggung_Putar_Z = 45 -- Miringin pedangnya
 
 -- =========================================================
 --  CORE SCRIPT (JANGAN DIUBAH)
@@ -72,12 +87,13 @@ local function pasangAksesoris()
     
     local head = char:WaitForChild("Head", 10)
     local hand = char:FindFirstChild("RightHand") or char:FindFirstChild("Right Arm")
+    local torso = char:FindFirstChild("UpperTorso") or char:FindFirstChild("Torso") -- Cek R15 atau R6
     
     if not head then return end
 
-    -- Bersihin Item Lama (Termasuk Tanduk)
+    -- Bersihin Item Lama
     for _, v in pairs(char:GetChildren()) do
-        if v.Name == "MyCustomHair" or v.Name == "MyHandItem" or v.Name == "MyMaskItem" or v.Name == "MyTanduk" then 
+        if v.Name == "MyCustomHair" or v.Name == "MyHandItem" or v.Name == "MyMaskItem" or v.Name == "MyTanduk" or v.Name == "MyBackItem" then 
             v:Destroy() 
         end
     end
@@ -102,7 +118,7 @@ local function pasangAksesoris()
     hairWeld.C0 = CFrame.new(Rambut_Kanan_Kiri, Rambut_Atas_Bawah, Rambut_Depan_Belakang) * 
                   CFrame.Angles(math.rad(Rambut_Putar_X), math.rad(Rambut_Putar_Y), math.rad(Rambut_Putar_Z))
 
-    -- === PASANG SENJATA ===
+    -- === PASANG SENJATA TANGAN ===
     if hand then 
         local handPart = Instance.new("Part")
         handPart.Name = "MyHandItem"
@@ -163,6 +179,28 @@ local function pasangAksesoris()
     tandukWeld.Part1 = tandukPart
     tandukWeld.C0 = CFrame.new(Tanduk_Kanan_Kiri, Tanduk_Atas_Bawah, Tanduk_Depan_Belakang) * 
                      CFrame.Angles(math.rad(Tanduk_Putar_X), math.rad(Tanduk_Putar_Y), math.rad(Tanduk_Putar_Z))
+
+    -- === PASANG PEDANG PUNGGUNG ===
+    if torso then
+        local backPart = Instance.new("Part")
+        backPart.Name = "MyBackItem"
+        backPart.Size = Vector3.new(0.1, 0.1, 0.1)
+        backPart.CanCollide = false
+        backPart.Massless = true
+        backPart.Parent = char
+
+        local backMesh = Instance.new("SpecialMesh", backPart)
+        backMesh.MeshType = Enum.MeshType.FileMesh
+        backMesh.MeshId = "rbxassetid://" .. Punggung_MeshID
+        backMesh.TextureId = "rbxassetid://" .. Punggung_TextureID
+        backMesh.Scale = Vector3.new(Punggung_Ukuran, Punggung_Ukuran, Punggung_Ukuran)
+
+        local backWeld = Instance.new("Weld", backPart)
+        backWeld.Part0 = torso
+        backWeld.Part1 = backPart
+        backWeld.C0 = CFrame.new(Punggung_Kanan_Kiri, Punggung_Atas_Bawah, Punggung_Depan_Belakang) * 
+                      CFrame.Angles(math.rad(Punggung_Putar_X), math.rad(Punggung_Putar_Y), math.rad(Punggung_Putar_Z))
+    end
 end
 
 pasangAksesoris()
