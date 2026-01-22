@@ -46,8 +46,8 @@ local Masker_Putar_Z = 0
 -- =========================================================
 --  4. PENGATURAN TANDUK (NEW ITEM)
 -- =========================================================
-local Tanduk_MeshID = "14584283788" 
-local Tanduk_TextureID = "" 
+local Tanduk_MeshID = "10869740875" 
+local Tanduk_TextureID = "10869740962" 
 local Tanduk_Ukuran = 1.0 
 
 local Tanduk_Atas_Bawah = 0.6      
